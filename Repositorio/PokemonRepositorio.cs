@@ -4,7 +4,7 @@ using PokeAPI.Repositorio.IRepositorio;
 
 namespace PokeAPI.Repositorio
 {
-    public class PokemonRepositorio : IPokemonRepositorio
+    public class PokemonRepositorio : IPokemonRepositorio 
     {
         public bool ActualizarPokemon(Pokemon pokemon)
         {
