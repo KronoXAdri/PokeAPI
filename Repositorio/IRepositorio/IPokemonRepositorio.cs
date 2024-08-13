@@ -5,7 +5,7 @@ namespace PokeAPI.Repositorio.IRepositorio
     public interface IPokemonRepositorio
     {
         ICollection<Pokemon> GetPokemons();
-        Pokemon GetPoklemon(int PokemonId);
+        Pokemon GetPokemon(int PokemonId);
         bool ExistePokemon(int PokemonId);
         bool ExistePokemon(string PokemonNombre);
         bool CrearPokemon(Pokemon pokemon);

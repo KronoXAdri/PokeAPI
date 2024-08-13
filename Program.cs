@@ -1,11 +1,23 @@
 using Microsoft.EntityFrameworkCore;
 using PokeAPI.Data;
+using PokeAPI.PokemonsMapper;
+using PokeAPI.Repositorio;
+using PokeAPI.Repositorio.IRepositorio;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+// Para agregar los repositorios
+builder.Services.AddScoped<IPokemonRepositorio, PokemonRepositorio>();
+
+
+//Agregar Automapper
+builder.Services.AddAutoMapper(typeof(PokemonMapper));
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

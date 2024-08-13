@@ -45,7 +45,7 @@ namespace PokeAPI.Migrations
 
                     b.HasKey("EntrenadorId");
 
-                    b.ToTable("Entrenadores");
+                    b.ToTable("Entrenadores", (string)null);
                 });
 
             modelBuilder.Entity("PokeAPI.Modelos.Pokemon", b =>
@@ -67,7 +67,7 @@ namespace PokeAPI.Migrations
 
                     b.HasKey("PokemonId");
 
-                    b.ToTable("Pokemons");
+                    b.ToTable("Pokemons", (string)null);
                 });
 
             modelBuilder.Entity("PokeAPI.Modelos.Pokemon", b =>
