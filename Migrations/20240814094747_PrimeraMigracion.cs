@@ -4,7 +4,7 @@
 
 namespace PokeAPI.Migrations
 {
-    public partial class PokeApiPrimeraMigracion : Migration
+    public partial class PrimeraMigracion : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -16,8 +16,7 @@ namespace PokeAPI.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Edad = table.Column<int>(type: "int", nullable: false),
-                    Region = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PokemonId = table.Column<int>(type: "int", nullable: false)
+                    Region = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -28,7 +27,8 @@ namespace PokeAPI.Migrations
                 name: "Pokemons",
                 columns: table => new
                 {
-                    PokemonId = table.Column<int>(type: "int", nullable: false),
+                    PokemonId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Region = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TieneShiny = table.Column<bool>(type: "bit", nullable: false)
@@ -36,22 +36,16 @@ namespace PokeAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Pokemons", x => x.PokemonId);
-                    table.ForeignKey(
-                        name: "FK_Pokemons_Entrenadores_PokemonId",
-                        column: x => x.PokemonId,
-                        principalTable: "Entrenadores",
-                        principalColumn: "EntrenadorId",
-                        onDelete: ReferentialAction.Cascade);
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Pokemons");
+                name: "Entrenadores");
 
             migrationBuilder.DropTable(
-                name: "Entrenadores");
+                name: "Pokemons");
         }
     }
 }

@@ -54,5 +54,43 @@ namespace PokeAPI.Controllers
 
             return Ok(pokemonDTO);
         }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult CrearPokemon([FromBody] CrearPokemonDTO pokemonDTO)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if(pokemonDTO == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (_ctRepo.ExistePokemon(pokemonDTO.Nombre))
+            {
+                ModelState.AddModelError("", "El pokemon ya existe");
+
+                return StatusCode(404, ModelState);
+            }
+
+            Pokemon pokemon = _mapper.Map<Pokemon>(pokemonDTO);
+
+            if (!_ctRepo.CrearPokemon(pokemon))
+            {
+                ModelState.AddModelError("", $"Algo salió mal guardando el pokemon: {pokemon.Nombre}");
+
+                return StatusCode(404, ModelState);
+            }
+
+
+            return CreatedAtRoute("GetPokemon", new {pokemonId = pokemon.PokemonId}, pokemon);
+        }
     }
 }

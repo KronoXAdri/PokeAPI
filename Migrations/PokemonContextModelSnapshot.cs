@@ -36,16 +36,13 @@ namespace PokeAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PokemonId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Region")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("EntrenadorId");
 
-                    b.ToTable("Entrenadores", (string)null);
+                    b.ToTable("Entrenadores");
                 });
 
             modelBuilder.Entity("PokeAPI.Modelos.Pokemon", b =>
@@ -53,6 +50,8 @@ namespace PokeAPI.Migrations
                     b.Property<int>("PokemonId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PokemonId"), 1L, 1);
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -67,21 +66,7 @@ namespace PokeAPI.Migrations
 
                     b.HasKey("PokemonId");
 
-                    b.ToTable("Pokemons", (string)null);
-                });
-
-            modelBuilder.Entity("PokeAPI.Modelos.Pokemon", b =>
-                {
-                    b.HasOne("PokeAPI.Modelos.Entrenador", null)
-                        .WithMany("ListaPokemon")
-                        .HasForeignKey("PokemonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("PokeAPI.Modelos.Entrenador", b =>
-                {
-                    b.Navigation("ListaPokemon");
+                    b.ToTable("Pokemons");
                 });
 #pragma warning restore 612, 618
         }

@@ -6,7 +6,7 @@ namespace PokeAPI.Modelos
     public class Pokemon
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] 
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int PokemonId { get; set; }
 
         public String Nombre { get; set; }
