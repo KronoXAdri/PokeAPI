@@ -92,5 +92,35 @@ namespace PokeAPI.Controllers
 
             return CreatedAtRoute("GetPokemon", new {pokemonId = pokemon.PokemonId}, pokemon);
         }
+
+        [HttpPut("{PokemonId:int}", Name = "GetPokemon")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult ActualizarCampoPokemon(int PokemonId, [FromBody] PokemonDTO pokemonDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (pokemonDTO == null || pokemonDTO.PokemonId != PokemonId)
+            {
+                return BadRequest(ModelState);
+            }
+
+            Pokemon pokemon = _mapper.Map<Pokemon>(pokemonDTO);
+
+            if (!_ctRepo.ActualizarPokemon(pokemon))
+            {
+                ModelState.AddModelError("", $"Algo salió mal actualizando el pokemon: {pokemon.Nombre}");
+
+                return StatusCode(404, ModelState);
+            }
+
+
+            return NoContent();
+        }
     }
 }
