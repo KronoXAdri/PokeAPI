@@ -11,8 +11,8 @@ using PokeAPI.Data;
 namespace PokeAPI.Migrations
 {
     [DbContext(typeof(PokemonContext))]
-    [Migration("20240812184612_PokeApiPrimeraMigracion")]
-    partial class PokeApiPrimeraMigracion
+    [Migration("20240814094747_PrimeraMigracion")]
+    partial class PrimeraMigracion
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -38,9 +38,6 @@ namespace PokeAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PokemonId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Region")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -56,6 +53,8 @@ namespace PokeAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PokemonId"), 1L, 1);
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -70,20 +69,6 @@ namespace PokeAPI.Migrations
                     b.HasKey("PokemonId");
 
                     b.ToTable("Pokemons");
-                });
-
-            modelBuilder.Entity("PokeAPI.Modelos.Pokemon", b =>
-                {
-                    b.HasOne("PokeAPI.Modelos.Entrenador", null)
-                        .WithMany("ListaPokemon")
-                        .HasForeignKey("PokemonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("PokeAPI.Modelos.Entrenador", b =>
-                {
-                    b.Navigation("ListaPokemon");
                 });
 #pragma warning restore 612, 618
         }
