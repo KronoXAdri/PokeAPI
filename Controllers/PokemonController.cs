@@ -122,5 +122,29 @@ namespace PokeAPI.Controllers
 
             return NoContent();
         }
+
+        [HttpDelete("{PokemonId:int}", Name = "BorrarPokemon")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult BorrarPokemon(int PokemonId)
+        {
+            if (!_ctRepo.ExistePokemon(PokemonId))
+            {
+                return NotFound();
+            }
+
+            Pokemon pokemon = _ctRepo.GetPokemon(PokemonId);
+
+            if (!_ctRepo.BorrarPokemon(pokemon))
+            {
+                ModelState.AddModelError("", $"Algo salio mal borrando el registro {pokemon.Nombre}");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
     }
 }
