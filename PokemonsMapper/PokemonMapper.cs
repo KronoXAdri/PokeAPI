@@ -12,6 +12,8 @@ namespace PokeAPI.PokemonsMapper
         {
             CreateMap<Pokemon, PokemonDTO>().ReverseMap();
             CreateMap<Pokemon, CrearPokemonDTO>().ReverseMap();
+            CreateMap<Entrenador, EntrenadorDTO>().ReverseMap();
+            CreateMap<Entrenador, CrearEntrenadorDTO>().ReverseMap();
         }
     }
 }
