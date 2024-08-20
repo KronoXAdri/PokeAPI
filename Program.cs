@@ -12,6 +12,7 @@ builder.Services.AddControllers();
 
 // Para agregar los repositorios
 builder.Services.AddScoped<IPokemonRepositorio, PokemonRepositorio>();
+builder.Services.AddScoped<IEntrenadorRepositorio, EntrenadorRepositorio>();
 
 
 //Agregar Automapper
