@@ -154,5 +154,57 @@ namespace PokeAPI.Controllers
             return NoContent();
         }
 
+        [HttpGet("GetPokemonEntrenador/{entrenadorId:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetPokemonEntrenador(int pokemonId)
+        {
+            List<Entrenador> listaEntrenadores = _enRepo.GetEntrenadoresByPokemon(pokemonId).ToList<Entrenador>();
+
+            if (listaEntrenadores == null)
+            {
+                return NotFound();
+            }
+
+            List<EntrenadorDTO> listaEntrenadoresDTO = new List<EntrenadorDTO>();
+
+            foreach (Entrenador entrenador in listaEntrenadores)
+            {
+                EntrenadorDTO entrenadorDTO = _mapper.Map<EntrenadorDTO>(entrenador);
+
+                listaEntrenadoresDTO.Add(entrenadorDTO);
+            }
+
+            return Ok(listaEntrenadoresDTO);
+        }
+
+        [HttpGet("BuscarEntrenador")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult BuscarEntrenador(String nombreEntrenador)
+        {
+            try
+            {
+                List<Entrenador> listaEntrenadores = _enRepo.BuscarTipoEntrenador(nombreEntrenador).ToList<Entrenador>();
+
+                if(listaEntrenadores.Any<Entrenador>())
+                {
+                    return Ok(listaEntrenadores);
+                }
+
+                return NotFound();
+            }
+            catch (Exception)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+        }
+
     }
 }
