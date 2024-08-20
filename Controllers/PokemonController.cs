@@ -93,7 +93,7 @@ namespace PokeAPI.Controllers
             return CreatedAtRoute("GetPokemon", new {pokemonId = pokemon.PokemonId}, pokemon);
         }
 
-        [HttpPut("{PokemonId:int}", Name = "GetPokemon")]
+        [HttpPut("{PokemonId:int}", Name = "ActualizarCampoPokemon")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

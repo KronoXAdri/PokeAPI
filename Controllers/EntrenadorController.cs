@@ -94,5 +94,65 @@ namespace PokeAPI.Controllers
             return CreatedAtRoute("GetEntrenador", new { entrenadorId = entrenador.EntrenadorId }, entrenador);
         }
 
+        [HttpPut("{EntrenadorId:int}", Name = "ActualizarCampoEntrenador")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult ActualizarCampoEntrenador(int EntrenadorId, [FromBody] EntrenadorDTO entrenadorDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (entrenadorDTO == null || entrenadorDTO.EntrenadorId != EntrenadorId)
+            {
+                return BadRequest(ModelState);
+            }
+
+            Entrenador entrenador = _mapper.Map<Entrenador>(entrenadorDTO);
+
+            if(!_enRepo.ExisteEntrenador(entrenador.EntrenadorId))
+            {
+                return NotFound($"No se ha encontrado el entrenador con el ID {entrenador.EntrenadorId} ");
+            }
+
+            if (!_enRepo.ActualizarEntrenador(entrenador))
+            {
+                ModelState.AddModelError("", $"Algo salió mal actualizando el pokemon: {entrenador.Nombre}");
+
+                return StatusCode(500, ModelState);
+            }
+
+
+            return NoContent();
+        }
+
+        [HttpDelete("{EntrenadorId:int}", Name = "BorrarEntrenador")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult BorrarEntrenador(int EntrenadorId)
+        {
+            if (!_enRepo.ExisteEntrenador(EntrenadorId))
+            {
+                return NotFound();
+            }
+
+            Entrenador entrenador = _enRepo.GetEntrenador(EntrenadorId);
+
+            if (!_enRepo.BorrarEntrenador(entrenador))
+            {
+                ModelState.AddModelError("", $"Algo salio mal borrando el registro {entrenador.Nombre}");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
+
     }
 }
