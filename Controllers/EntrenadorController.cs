@@ -22,7 +22,7 @@ namespace PokeAPI.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public IActionResult GetPokemons()
+        public IActionResult GetEntrenadores()
         {
             var listaEntrenadores = _enRepo.GetEntrenadores();
 

@@ -9,7 +9,6 @@ namespace PokeAPI.Repositorio
     {
         private readonly PokemonContext _bd;
         
-
         public PokemonRepositorio(PokemonContext bd)
         {
             this._bd = bd;

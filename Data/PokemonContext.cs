@@ -10,5 +10,6 @@ namespace PokeAPI.Data
         }
         public DbSet<Pokemon> Pokemons { get; set; }
         public DbSet<Entrenador> Entrenadores { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
     }
 }
