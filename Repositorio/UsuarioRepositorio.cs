@@ -1,7 +1,11 @@
 ﻿
+using Microsoft.IdentityModel.Tokens;
 using PokeAPI.Data;
 using PokeAPI.Modelos;
 using PokeAPI.Modelos.Dtos;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using XSystem.Security.Cryptography;
 
 namespace PokeAPI.Repositorio.IRepositorio
@@ -9,10 +13,12 @@ namespace PokeAPI.Repositorio.IRepositorio
     public class UsuarioRepositorio : IUsuarioRepositorio
     {
         public readonly PokemonContext _bd;
+        private String claveSecreta;
 
-        public UsuarioRepositorio(PokemonContext bd)
+        public UsuarioRepositorio(PokemonContext bd, IConfiguration config)
         {
             this._bd = bd;
+            this.claveSecreta = config.GetValue<String>("AppiSettings:Secreta");
         }
 
         public ICollection<Usuario> GetUsuarios()
@@ -32,9 +38,46 @@ namespace PokeAPI.Repositorio.IRepositorio
             return (usuario == null) ? true : false;
         }
 
-        public Task<UsuarioLoginRespuestaDTO> Login(UsuarioLoginDTO usuarioLoginDTO)
+        public async Task<UsuarioLoginRespuestaDTO> Login(UsuarioLoginDTO usuarioLoginDTO)
         {
-            throw new NotImplementedException();
+            String passwordEncriptado = obtenermd5(usuarioLoginDTO.Password);
+            Usuario usuario = _bd.Usuarios.FirstOrDefault<Usuario>(
+                usuario => usuario.NombreUsuario.ToLower() == usuarioLoginDTO.NombreUsuario.ToLower()
+                && usuario.Password == passwordEncriptado
+                );
+
+            if(usuario == null)
+            {
+                return new UsuarioLoginRespuestaDTO()
+                {
+                    Token = "",
+                    Usuario = null
+                };
+            }
+
+            JwtSecurityTokenHandler manejadorToken = new JwtSecurityTokenHandler();
+            byte[] key = Encoding.ASCII.GetBytes(claveSecreta);
+
+            SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.Name, usuario.NombreUsuario.ToString()),
+                    new Claim(ClaimTypes.Role, usuario.Role)
+                }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            SecurityToken token = manejadorToken.CreateToken(tokenDescriptor);
+
+            UsuarioLoginRespuestaDTO usuarioLoginRespuestaDTO = new UsuarioLoginRespuestaDTO
+            {
+                Token = manejadorToken.WriteToken(token),
+                Usuario = usuario
+            };
+
+            return usuarioLoginRespuestaDTO;
         }
 
         public async Task<Usuario> Registro(UsuarioRegistroDTO usuarioRegistroDTO)
@@ -51,7 +94,7 @@ namespace PokeAPI.Repositorio.IRepositorio
 
             _bd.Usuarios.Add(usuario);
             await _bd.SaveChangesAsync();
-
+ 
             usuario.Password = passwordEncriptado;
             return usuario;
         }
@@ -59,7 +102,7 @@ namespace PokeAPI.Repositorio.IRepositorio
         private String obtenermd5(String password)
         {
             MD5CryptoServiceProvider cryptoService = new MD5CryptoServiceProvider();
-            byte[] data = System.Text.Encoding.UTF8.GetBytes(password);
+            byte[] data = Encoding.UTF8.GetBytes(password);
             data = cryptoService.ComputeHash(data);
             String passwordEncriptada = "";
             for (int i = 0; i < data.Length; i++)
