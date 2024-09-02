@@ -1,8 +1,11 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using PokeAPI.Data;
 using PokeAPI.PokemonsMapper;
 using PokeAPI.Repositorio;
 using PokeAPI.Repositorio.IRepositorio;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,10 +18,30 @@ builder.Services.AddScoped<IPokemonRepositorio, PokemonRepositorio>();
 builder.Services.AddScoped<IEntrenadorRepositorio, EntrenadorRepositorio>();
 builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
 
+String key = builder.Configuration.GetValue<String>("AppiSettings:Secreta");
 
 //Agregar Automapper
 builder.Services.AddAutoMapper(typeof(PokemonMapper));
 
+//Aquí se configura la autenticación
+builder.Services.AddAuthentication(
+        x => 
+        {
+            x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }
+    ).AddJwtBearer(x =>
+    {
+        x.RequireHttpsMetadata = false;
+        x.SaveToken = true;
+        x.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)),
+            ValidateIssuer = false,
+            ValidateAudience = false  
+        };
+    });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -71,6 +94,9 @@ app.UseHttpsRedirection();
 //{
 //    endpoints.MapControllers().RequireCors("PoliticaCors");
 //});
+
+//Sirve para la autenticación
+app.UseAuthentication();
 
 app.UseAuthorization();
 
