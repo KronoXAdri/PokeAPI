@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using PokeAPI.Data;
 using PokeAPI.PokemonsMapper;
 using PokeAPI.Repositorio;
@@ -45,7 +46,36 @@ builder.Services.AddAuthentication(
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options => 
+    {
+        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Description = "Autenticación JWT usando el esquema Bearer. \r\n\r\n " +
+            "Ingresa la palabra 'Bearer' seguido de un [espacio] y después su token en el campo de abajo. \r\n\r\n" +
+            "Ejemplo: \"Bearer tklkhjhkiu12\"",
+            Name = "Authorization",
+            In = ParameterLocation.Header,
+            Scheme = "Bearer"
+        });
+        options.AddSecurityRequirement(new OpenApiSecurityRequirement()
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    },
+                    Scheme = "oauth2",
+                    Name = "Bearer",
+                    In = ParameterLocation.Header
+                },
+                new List<String>()
+            }
+        });
+    }
+);
 
 //Soporte para CORS
 //Se puede habilitar: 1-Un dominio, 2-Multiples dominios, 3-Cualquier dominio (Tener en cuenta seguridad)
