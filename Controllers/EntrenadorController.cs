@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PokeAPI.Modelos;
 using PokeAPI.Modelos.Dtos;
@@ -55,6 +56,7 @@ namespace PokeAPI.Controllers
             return Ok(entrenadorDTO);
         }
 
+        [Authorize]
         [HttpPost]
         [ProducesResponseType(201, Type =  typeof(EntrenadorDTO))]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -94,6 +96,7 @@ namespace PokeAPI.Controllers
             return CreatedAtRoute("GetEntrenador", new { entrenadorId = entrenador.EntrenadorId }, entrenador);
         }
 
+        [Authorize]
         [HttpPut("{EntrenadorId:int}", Name = "ActualizarCampoEntrenador")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -130,6 +133,7 @@ namespace PokeAPI.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpDelete("{EntrenadorId:int}", Name = "BorrarEntrenador")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -180,6 +184,7 @@ namespace PokeAPI.Controllers
             return Ok(listaEntrenadoresDTO);
         }
 
+        [Authorize]
         [HttpGet("BuscarEntrenador")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]

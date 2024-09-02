@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PokeAPI.Modelos;
 using PokeAPI.Modelos.Dtos;
@@ -22,6 +23,7 @@ namespace PokeAPI.Controllers
             this._respuestaAPI = new();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]

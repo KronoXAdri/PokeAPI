@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PokeAPI.Modelos;
 using PokeAPI.Modelos.Dtos;
@@ -55,6 +56,7 @@ namespace PokeAPI.Controllers
             return Ok(pokemonDTO);
         }
 
+        [Authorize]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -93,6 +95,7 @@ namespace PokeAPI.Controllers
             return CreatedAtRoute("GetPokemon", new {pokemonId = pokemon.PokemonId}, pokemon);
         }
 
+        [Authorize]
         [HttpPut("{PokemonId:int}", Name = "ActualizarCampoPokemon")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -123,6 +126,7 @@ namespace PokeAPI.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpDelete("{PokemonId:int}", Name = "BorrarPokemon")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
