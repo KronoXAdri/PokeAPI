@@ -20,6 +20,7 @@ namespace PokeAPI.Controllers
             this._mapper = mapper;
         }
 
+        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -38,6 +39,7 @@ namespace PokeAPI.Controllers
         }
 
         [HttpGet("{EntrenadorId:int}", Name = "GetEntrenador")]
+        [ResponseCache(Duration = 40)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

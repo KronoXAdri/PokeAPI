@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -12,7 +13,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(option =>
+{
+    //Cache profile. Un cache global para evitar ponerlo en todas partes 
+    option.CacheProfiles.Add("PorDefecto20Segundos", new CacheProfile(){ Duration = 20 });
+});
+
+//Soporte para Caché
+builder.Services.AddResponseCaching();
 
 // Para agregar los repositorios
 builder.Services.AddScoped<IPokemonRepositorio, PokemonRepositorio>();

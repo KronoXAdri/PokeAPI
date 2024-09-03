@@ -7,6 +7,8 @@ using PokeAPI.Repositorio.IRepositorio;
 
 namespace PokeAPI.Controllers
 {
+    //[ResponseCache(Duration = 20)]
+    [ResponseCache(CacheProfileName = "PorDefecto20Segundos")]
     [Route("api/[controller]")]
     [ApiController]
     public class PokemonController : ControllerBase
