@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +21,7 @@ builder.Services.AddControllers(option =>
 });
 
 //Soporte para Caché
-builder.Services.AddResponseCaching();
+//builder.Services.AddResponseCaching();
 
 // Para agregar los repositorios
 builder.Services.AddScoped<IPokemonRepositorio, PokemonRepositorio>();
@@ -31,6 +32,20 @@ String key = builder.Configuration.GetValue<String>("AppiSettings:Secreta");
 
 //Agregar Automapper
 builder.Services.AddAutoMapper(typeof(PokemonMapper));
+
+//Soporte para versiones
+//var apiVersioningBuilder = builder.Services.AddApiVersioning(opcion => {
+//    opcion.AssumeDefaultVersionWhenUnspecified = true;
+//    opcion.DefaultApiVersion = new ApiVersion(1, 0);
+//    opcion.ReportApiVersions = true;
+//    opcion.ApiVersionReader = ApiVersionReader.Combine(
+//        new QueryStringApiVersionReader("api-version") // api-version=1.0 || 2.0 || etc
+//    //);
+//});
+//apiVersioningBuilder.AddApiExplorer(opciones => {
+//    opciones.GroupNameFormat = "'v'VVV";
+//    opciones.SubstituteApiVersionInUrl = true;
+//});
 
 //Aquí se configura la autenticación
 builder.Services.AddAuthentication(
@@ -82,6 +97,8 @@ builder.Services.AddSwaggerGen(options =>
                 new List<String>()
             }
         });
+        options.SwaggerDoc("v1", new OpenApiInfo { Title = "ApiPokemon", Version = "v1" });
+        options.SwaggerDoc("v2", new OpenApiInfo { Title = "ApiPokemon", Version = "v2" });
     }
 );
 
