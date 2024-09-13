@@ -21,7 +21,7 @@ builder.Services.AddControllers(option =>
 });
 
 //Soporte para Caché
-//builder.Services.AddResponseCaching();
+builder.Services.AddResponseCaching();
 
 // Para agregar los repositorios
 builder.Services.AddScoped<IPokemonRepositorio, PokemonRepositorio>();
@@ -97,8 +97,44 @@ builder.Services.AddSwaggerGen(options =>
                 new List<String>()
             }
         });
-        options.SwaggerDoc("v1", new OpenApiInfo { Title = "ApiPokemon", Version = "v1" });
-        options.SwaggerDoc("v2", new OpenApiInfo { Title = "ApiPokemon", Version = "v2" });
+        options.SwaggerDoc("v1", new OpenApiInfo
+        {
+            Version = "v1.0",
+            Title = "ApiPokemon",
+            Description = "Api de prueba de Pokemon",
+            TermsOfService = new Uri("http://prueba.com"),
+            Contact = new OpenApiContact
+            {
+                Name = "AdrianAyour",
+                Url = new Uri("http://adrianayour.com")
+            },
+            License = new OpenApiLicense
+            {
+                Name = "Creative Commons",
+                Url = new Uri("http://adrianayourCretiveCommons.com")
+            }
+        });
+        //De momento no funciona porque todos los endpoints son v1
+        options.SwaggerDoc("v2", new OpenApiInfo
+        {
+            Version = "v2.0",
+            Title = "ApiPokemon",
+            Description = "Api de prueba de Pokemon",
+            TermsOfService = new Uri("http://prueba.com"),
+            Contact = new OpenApiContact
+            {
+                Name = "AdrianAyour",
+                Url = new Uri("http://adrianayour.com")
+            },
+            License = new OpenApiLicense
+            {
+                Name = "Creative Commons",
+                Url = new Uri("http://adrianayourCretiveCommons.com")
+            }
+        });
+
+        //options.SwaggerDoc("v1", new OpenApiInfo { Title = "ApiPokemon", Version = "v1" });
+        //options.SwaggerDoc("v2", new OpenApiInfo { Title = "ApiPokemon", Version = "v2" });
     }
 );
 
@@ -136,7 +172,11 @@ using (var scope = app.Services.CreateScope())
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(opciones =>
+    {
+        opciones.SwaggerEndpoint("/swagger/v1/swagger.json", "ApiPokemonV1");
+        opciones.SwaggerEndpoint("/swagger/v2/swagger.json", "ApiPokemonV2");
+    });
 }
 
 app.UseHttpsRedirection();
